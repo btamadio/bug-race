@@ -14,7 +14,7 @@
   [lane]
   [:div.field.is-horizontal
    [:div.field-label.is-normal
-    [:label.label (str "Lane " lane)]]
+    [:label.label (str "Lane " (inc lane))]]
    [:div.field-body
     [:div.field.is-grouped
      [:div.control
@@ -53,13 +53,13 @@
      [:div.panel-block
       [speed-radio]]
      [:div.panel-block
+      [lane-form 0]]
+     [:div.panel-block
       [lane-form 1]]
      [:div.panel-block
       [lane-form 2]]
      [:div.panel-block
-      [lane-form 3]]
-     [:div.panel-block
-      [lane-form 4]]]]
+      [lane-form 3]]]]
    [:div.column
     [race-button]]])
 

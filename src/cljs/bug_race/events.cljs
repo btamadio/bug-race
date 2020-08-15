@@ -12,5 +12,4 @@
 (re-frame/reg-event-db
  ::select-icon
  (fn [db [_ lane bug-index]]
-   (println lane bug-index)
-   db))
+   (assoc-in db [:lanes lane :icon] bug-index)))
