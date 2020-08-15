@@ -57,7 +57,8 @@
                   :checked (= race-speed :fast)}] " Fast"]]]]]))
 
 (defn race-button []
-  [:button.button "Start!"])
+  [:button.button.is-primary
+   {:disabled @(subscribe [::subs/duplicate-icon?])} "Start!"])
 
 (defn unique-icon-notif []
   [:div.notification.is-warning 
