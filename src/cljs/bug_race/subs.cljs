@@ -33,8 +33,13 @@
  ::lane-names
  :<- [::lanes]
  (fn [lanes [_ _]]
-   (println (mapv :name lanes))
    (mapv :name lanes)))
+
+(re-frame/reg-sub
+ ::lane-positions
+ :<- [::lanes]
+ (fn [lanes [_ _]]
+   (mapv :position lanes)))
 
 (re-frame/reg-sub
  ::duplicate-name?
@@ -49,6 +54,12 @@
  :<- [::lane-icons]
  (fn [lane-icons [_ id]]
    (lane-icons id)))
+
+(re-frame/reg-sub
+ ::lane-position
+ :<- [::lane-positions]
+ (fn [lane-positions [_ id]]
+   (lane-positions id)))
 
 (re-frame/reg-sub
  ::duplicate-icon?

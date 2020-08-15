@@ -45,23 +45,24 @@
         [:label.radio
          [:input {:type :radio
                   :name "game-speed"
-                  :on-click #(dispatch [::events/set-game-speed :slow])
-                  :checked (= race-speed :slow)}] " Slow"]
+                  :on-click #(dispatch [::events/set-game-speed 1])
+                  :checked (= race-speed 1)}] " Slow"]
         [:label.radio
          [:input {:type :radio
                   :name "game-speed"
-                  :on-click #(dispatch [::events/set-game-speed :normal])
-                  :checked (= race-speed :normal)}] " Normal"]
+                  :on-click #(dispatch [::events/set-game-speed 2])
+                  :checked (= race-speed 2)}] " Normal"]
         [:label.radio
          [:input {:type :radio
                   :name "game-speed"
-                  :on-click #(dispatch [::events/set-game-speed :fast])
-                  :checked (= race-speed :fast)}] " Fast"]]]]]))
+                  :on-click #(dispatch [::events/set-game-speed 4])
+                  :checked (= race-speed 4)}] " Fast"]]]]]))
 
 (defn race-button []
   [:div.control.mb-6
    [:button.button.is-primary
-    {:disabled (or
+    {:on-click #(dispatch [::events/start-race])
+     :disabled (or
                 @(subscribe [::subs/duplicate-name?])
                 @(subscribe [::subs/duplicate-icon?]))}
     "Start!"]])
@@ -106,13 +107,21 @@
        [:input {:type :radio :name :winner-guess}]]]]]
    [:div#race-track.tile.is-8.box.is-child
     [:figure.image.is-48x48.mb-5.mt-1
-     [:img {:src (bug-icons @(subscribe [::subs/lane-icon 0]))}]]
+     [:img {:src (bug-icons @(subscribe [::subs/lane-icon 0]))
+            :style {:position :absolute
+                    :left @(subscribe [::subs/lane-position 0])}}]]
     [:figure.image.is-48x48.mb-6
-     [:img {:src (bug-icons @(subscribe [::subs/lane-icon 1]))}]]
+     [:img {:src (bug-icons @(subscribe [::subs/lane-icon 1]))
+            :style {:position :absolute
+                    :left @(subscribe [::subs/lane-position 1])}}]]
     [:figure.image.is-48x48.mb-6
-     [:img {:src (bug-icons @(subscribe [::subs/lane-icon 2]))}]]
+     [:img {:src (bug-icons @(subscribe [::subs/lane-icon 2]))
+            :style {:position :absolute
+                    :left @(subscribe [::subs/lane-position 2])}}]]
     [:figure.image.is-48x48.mb-1
-     [:img {:src (bug-icons @(subscribe [::subs/lane-icon 3]))}]]]])
+     [:img {:src (bug-icons @(subscribe [::subs/lane-icon 3]))
+            :style {:position :absolute
+                    :left @(subscribe [::subs/lane-position 3])}}]]]])
 
 (defn main-panel []
   [:div
