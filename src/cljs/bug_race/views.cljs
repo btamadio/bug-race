@@ -12,35 +12,49 @@
 
 (defn lane-form
   [lane]
-  [:div.field.is-horizontal
-   [:div.field-label.is-normal
-    [:label.label (str "Lane " (inc lane))]]
-   [:div.field-body
-    [:div.field.is-grouped
-     [:div.control
-      (for [bug-index [0 1 2 3]]
-        ^{:key bug-index} [:label.radio
-             [:figure.image.is-24x24
-              [:img {:src (bug-icons bug-index)}]]
-             [:input {:type :radio :name (str "icon-lane" lane) :on-click #(dispatch [::events/select-icon lane bug-index])}]])]]
-    [:div.field
-     [:div.control
-      [:input.input {:type :text :placeholder "name"}]]]]])
+  (let [bug-icon @(subscribe [::subs/lane-icon lane])]
+    [:div.field.is-horizontal
+     [:div.field-label.is-normal
+      [:label.label (str "Lane " (inc lane))]]
+     [:div.field-body
+      [:div.field.is-grouped
+       [:div.control
+        (for [bug-index [0 1 2 3]]
+          ^{:key bug-index} [:label.radio
+                             [:figure.image.is-24x24
+                              [:img {:src (bug-icons bug-index)}]]
+                             [:input {:type :radio
+                                      :checked (= bug-icon bug-index)
+                                      :name (str "icon-lane" lane)
+                                      :on-click #(dispatch [::events/select-icon lane bug-index])}]])]]
+      [:div.field
+       [:div.control
+        [:input.input {:type :text :placeholder "name"}]]]]]))
 
 (defn speed-radio
   []
-  [:div.field.is-horizontal
-   [:div.field-label
-    [:label.label "Speed"]]
-   [:div.field-body
-    [:div.field
-     [:div.control
-      [:label.radio
-       [:input {:type :radio :name "game-speed"}] " Slow"]
-      [:label.radio
-       [:input {:type :radio :name "game-speed"}] " Normal"]
-      [:label.radio
-       [:input {:type :radio :name "game-speed"}] " Fast"]]]]])
+  (let [race-speed @(subscribe [::subs/race-speed])]
+    [:div.field.is-horizontal
+     [:div.field-label
+      [:label.label "Speed"]]
+     [:div.field-body
+      [:div.field
+       [:div.control
+        [:label.radio
+         [:input {:type :radio
+                  :name "game-speed"
+                  :on-click #(dispatch [::events/set-game-speed :slow])
+                  :checked (= race-speed :slow)}] " Slow"]
+        [:label.radio
+         [:input {:type :radio
+                  :name "game-speed"
+                  :on-click #(dispatch [::events/set-game-speed :normal])
+                  :checked (= race-speed :normal)}] " Normal"]
+        [:label.radio
+         [:input {:type :radio
+                  :name "game-speed"
+                  :on-click #(dispatch [::events/set-game-speed :fast])
+                  :checked (= race-speed :fast)}] " Fast"]]]]]))
 
 (defn race-button []
   [:button.button "Start!"])

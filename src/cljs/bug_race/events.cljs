@@ -13,3 +13,8 @@
  ::select-icon
  (fn [db [_ lane bug-index]]
    (assoc-in db [:lanes lane :icon] bug-index)))
+
+(re-frame/reg-event-db
+ ::set-game-speed
+ (fn [db [_ speed]]
+   (assoc db :race-speed speed)))
