@@ -33,3 +33,9 @@
  :<- [::lane-icons]
  (fn [lane-icons [_ id]]
    (lane-icons id)))
+
+(re-frame/reg-sub
+ ::duplicate-icon?
+ :<- [::lane-icons]
+ (fn [lane-icons [_ _]]
+   (not= (distinct lane-icons) lane-icons)))

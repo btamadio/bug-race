@@ -59,6 +59,10 @@
 (defn race-button []
   [:button.button "Start!"])
 
+(defn unique-icon-notif []
+  [:div.notification.is-warning 
+   "Please select a different bug icon for each lane"])
+
 (defn control-panel []
   [:div.columns
    [:div.column.is-6
@@ -74,8 +78,10 @@
       [lane-form 2]]
      [:div.panel-block
       [lane-form 3]]]]
-   [:div.column
-    [race-button]]])
+   [:div.column.is-4
+    [race-button]
+    (when @(subscribe [::subs/duplicate-icon?])
+      [unique-icon-notif])]])
 
 (defn race-track []
   [:div.tile.is-ancestor
