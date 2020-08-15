@@ -23,6 +23,7 @@
  (fn [db [_ lane name]]
    (assoc-in db [:lanes lane :name] name)))
 
+; https://github.com/district0x/re-frame-interval-fx
 (def registered-keys (atom nil))
 
 (re-frame/reg-fx
@@ -49,6 +50,11 @@
                            :id :game-ticker
                            :ms 10}})))
 
+(re-frame/reg-event-fx
+ ::end-race
+ (fn [cofx _]
+   {::clear-interval {:id :game-ticker}}))
+
 (def speeds
   {:slow 5
    :normal 10
@@ -56,19 +62,25 @@
 
 (defn move-bug
   [game-speed bug-speed]
-  (println game-speed)
   (fn [x] (+ x (* bug-speed (game-speed speeds)))))
 
 (re-frame/reg-event-db
  ::move-bug
  (fn [db [_ id]]
-   (-> db
-       (update-in [:lanes id :position] (move-bug (:race-speed db) (get-in db [:lanes id :speed]))))))
+   (update-in db [:lanes id :position] (move-bug (:race-speed db) (get-in db [:lanes id :speed])))))
+
+(defn winner
+  [positions]
+  (first (keep-indexed #(when (> %2 400) %1) positions)))
 
 (re-frame/reg-event-fx
  ::tick
- (fn [_ _]
-   {:dispatch-n (list [::move-bug 0] [::move-bug 1] [::move-bug 2] [::move-bug 3])}))
+ (fn [cofx _]
+   (let [positions (mapv :position (get-in cofx [:db :lanes]))
+         winner-id (winner positions)]
+     (if winner-id
+       {:dispatch [::end-race]}
+       {:dispatch-n (list [::move-bug 0] [::move-bug 1] [::move-bug 2] [::move-bug 3])}))))
 
 (re-frame/reg-cofx
  :random-int
@@ -81,5 +93,6 @@
  (fn [cofx [_ id]]
    (let [db (:db cofx)
          rand-int (:random-int cofx)]
-     (println rand-int)
      {:db (assoc-in db [:lanes id :speed] (/ rand-int 1000))})))
+
+
