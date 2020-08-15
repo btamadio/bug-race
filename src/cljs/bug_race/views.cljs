@@ -36,11 +36,11 @@
     [:div.field
      [:div.control
       [:label.radio
-       [:input {:type :radio :name "game-speed"}] "Slow"]
+       [:input {:type :radio :name "game-speed"}] " Slow"]
       [:label.radio
-       [:input {:type :radio :name "game-speed"}] "Normal"]
+       [:input {:type :radio :name "game-speed"}] " Normal"]
       [:label.radio
-       [:input {:type :radio :name "game-speed"}] "Fast"]]]]])
+       [:input {:type :radio :name "game-speed"}] " Fast"]]]]])
 
 (defn race-button []
   [:button.button "Start!"])
@@ -66,19 +66,27 @@
 (defn race-track []
   [:div.tile.is-ancestor
    [:div.tile.is-1.is-parent.is-vertical
-    [:div.tile.is-child.box.pt-6
-     [:input.my-5 {:type :radio :name :winner-guess}]
-     [:input.my-5 {:type :radio :name :winner-guess}]
-     [:input.my-5 {:type :radio :name :winner-guess}]
-     [:input.my-5 {:type :radio :name :winner-guess}]]]
+    [:div.tile.is-child
+     [:div.box.is-child.has-text-centered
+      [:div.control
+       [:input {:type :radio :name :winner-guess}]]]
+     [:div.box.is-child.has-text-centered
+      [:div.control
+       [:input {:type :radio :name :winner-guess}]]]
+     [:div.box.is-child.has-text-centered
+      [:div.control
+       [:input {:type :radio :name :winner-guess}]]]
+     [:div.box.is-child
+      [:div.control
+       [:input {:type :radio :name :winner-guess}]]]]]
    [:div#race-track.tile.is-8.box.is-child
-    [:figure.image.is-48x48.my-5
+    [:figure.image.is-48x48.mb-5.mt-1
      [:img {:src (bug-icons 0)}]]
-    [:figure.image.is-48x48.my-5
+    [:figure.image.is-48x48.mb-6
      [:img {:src (bug-icons 1)}]]
-    [:figure.image.is-48x48.my-5
+    [:figure.image.is-48x48.mb-6
      [:img {:src (bug-icons 2)}]]
-    [:figure.image.is-48x48.my-5
+    [:figure.image.is-48x48.mb-1
      [:img {:src (bug-icons 3)}]]]])
 
 (defn main-panel []
