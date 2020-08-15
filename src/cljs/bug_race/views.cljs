@@ -61,7 +61,10 @@
 (defn race-button []
   [:div.control.mb-6
    [:button.button.is-primary
-    {:disabled @(subscribe [::subs/duplicate-icon?])} "Start!"]])
+    {:disabled (or
+                @(subscribe [::subs/duplicate-name?])
+                @(subscribe [::subs/duplicate-icon?]))}
+    "Start!"]])
 
 (defn control-panel []
   [:div.columns
