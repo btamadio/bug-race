@@ -23,7 +23,13 @@
    (:lanes db)))
 
 (re-frame/reg-sub
- ::lane-icon
+ ::lane-icons
  :<- [::lanes]
- (fn [lanes [_ id]]
-   (:icon (lanes id))))
+ (fn [lanes [_ _]]
+   (mapv :icon lanes)))
+
+(re-frame/reg-sub
+ ::lane-icon
+ :<- [::lane-icons]
+ (fn [lane-icons [_ id]]
+   (lane-icons id)))

@@ -19,10 +19,10 @@
     [:div.field.is-grouped
      [:div.control
       (for [bug-index [0 1 2 3]]
-        [:label.radio
-         [:figure.image.is-24x24
-          [:img {:src (bug-icons bug-index)}]]
-         [:input {:type :radio :name (str "icon-lane" lane) :on-click #(dispatch [::events/select-icon lane bug-index])}]])]]
+        ^{:key bug-index} [:label.radio
+             [:figure.image.is-24x24
+              [:img {:src (bug-icons bug-index)}]]
+             [:input {:type :radio :name (str "icon-lane" lane) :on-click #(dispatch [::events/select-icon lane bug-index])}]])]]
     [:div.field
      [:div.control
       [:input.input {:type :text :placeholder "name"}]]]]])
