@@ -8,3 +8,9 @@
  ::initialize-db
  (fn [_ _]
    db/default-db))
+
+(re-frame/reg-event-db
+ ::select-icon
+ (fn [db [_ lane bug-index]]
+   (println lane bug-index)
+   db))

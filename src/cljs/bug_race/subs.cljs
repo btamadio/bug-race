@@ -22,3 +22,8 @@
  (fn [db]
    (:lanes db)))
 
+(re-frame/reg-sub
+ ::lane-icon
+ :<- [::lanes]
+ (fn [lanes [_ id]]
+   (:icon (lanes id))))

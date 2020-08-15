@@ -1,8 +1,8 @@
 (ns bug-race.views
   (:require
-   [re-frame.core :as re-frame]
+   [re-frame.core :refer [subscribe dispatch]]
    [bug-race.subs :as subs]
-   ))
+   [bug-race.events :as events]))
 
 (def bug-icons
   ["images/ant.png"
@@ -18,11 +18,11 @@
    [:div.field-body
     [:div.field.is-grouped
      [:div.control
-      (for [bug-icon bug-icons]
+      (for [bug-index [0 1 2 3]]
         [:label.radio
          [:figure.image.is-24x24
-          [:img {:src bug-icon}]]
-         [:input {:type :radio :name (str "icon-lane" lane)}]])]]
+          [:img {:src (bug-icons bug-index)}]]
+         [:input {:type :radio :name (str "icon-lane" lane) :on-click #(dispatch [::events/select-icon lane bug-index])}]])]]
     [:div.field
      [:div.control
       [:input.input {:type :text :placeholder "name"}]]]]])
@@ -81,15 +81,15 @@
        [:input {:type :radio :name :winner-guess}]]]]]
    [:div#race-track.tile.is-8.box.is-child
     [:figure.image.is-48x48.mb-5.mt-1
-     [:img {:src (bug-icons 0)}]]
+     [:img {:src (bug-icons @(subscribe [::subs/lane-icon 0]))}]]
     [:figure.image.is-48x48.mb-6
-     [:img {:src (bug-icons 1)}]]
+     [:img {:src (bug-icons @(subscribe [::subs/lane-icon 1]))}]]
     [:figure.image.is-48x48.mb-6
-     [:img {:src (bug-icons 2)}]]
+     [:img {:src (bug-icons @(subscribe [::subs/lane-icon 2]))}]]
     [:figure.image.is-48x48.mb-1
-     [:img {:src (bug-icons 3)}]]]])
+     [:img {:src (bug-icons @(subscribe [::subs/lane-icon 3]))}]]]])
 
 (defn main-panel []
-  [:body
+  [:div
    [race-track]
    [control-panel]])
