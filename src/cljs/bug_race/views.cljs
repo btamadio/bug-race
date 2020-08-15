@@ -45,24 +45,25 @@
         [:label.radio
          [:input {:type :radio
                   :name "game-speed"
-                  :on-click #(dispatch [::events/set-game-speed 1])
-                  :checked (= race-speed 1)}] " Slow"]
+                  :on-click #(dispatch [::events/set-game-speed :slow])
+                  :checked (= race-speed :slow)}] " Slow"]
         [:label.radio
          [:input {:type :radio
                   :name "game-speed"
-                  :on-click #(dispatch [::events/set-game-speed 2])
-                  :checked (= race-speed 2)}] " Normal"]
+                  :on-click #(dispatch [::events/set-game-speed :normal])
+                  :checked (= race-speed :normal)}] " Normal"]
         [:label.radio
          [:input {:type :radio
                   :name "game-speed"
-                  :on-click #(dispatch [::events/set-game-speed 4])
-                  :checked (= race-speed 4)}] " Fast"]]]]]))
+                  :on-click #(dispatch [::events/set-game-speed :fast])
+                  :checked (= race-speed :fast)}] " Fast"]]]]]))
 
 (defn race-button []
   [:div.control.mb-6
    [:button.button.is-primary
     {:on-click #(dispatch [::events/start-race])
      :disabled (or
+                (= @(subscribe [::subs/race-stage]) :racing)
                 @(subscribe [::subs/duplicate-name?])
                 @(subscribe [::subs/duplicate-icon?]))}
     "Start!"]])

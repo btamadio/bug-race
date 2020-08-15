@@ -1,7 +1,7 @@
 (ns bug-race.db)
 
 (def default-db
-  {:race-speed 2
+  {:race-speed :normal
    :race-stage :pre-race
    :winner-guess nil
    :lanes [{:position 0 :name nil :icon 0 :speed 1}

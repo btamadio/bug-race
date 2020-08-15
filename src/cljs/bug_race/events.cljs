@@ -44,13 +44,20 @@
  (fn [cofx _]
    (let [db (:db cofx)]
      {:db (assoc db :race-stage :racing)
+      :dispatch-n (list [::set-bug-speed 0] [::set-bug-speed 1] [::set-bug-speed 2] [::set-bug-speed 3])
       ::dispatch-interval {:dispatch [::tick]
                            :id :game-ticker
-                           :ms 250}})))
+                           :ms 10}})))
+
+(def speeds
+  {:slow 5
+   :normal 10
+   :fast 15})
 
 (defn move-bug
   [game-speed bug-speed]
-  (fn [x] (+ x (* bug-speed game-speed))))
+  (println game-speed)
+  (fn [x] (+ x (* bug-speed (game-speed speeds)))))
 
 (re-frame/reg-event-db
  ::move-bug
@@ -62,3 +69,17 @@
  ::tick
  (fn [_ _]
    {:dispatch-n (list [::move-bug 0] [::move-bug 1] [::move-bug 2] [::move-bug 3])}))
+
+(re-frame/reg-cofx
+ :random-int
+ (fn [coeffects val]
+   (assoc coeffects :random-int (rand-int val))))
+
+(re-frame/reg-event-fx
+ ::set-bug-speed
+ [(re-frame/inject-cofx :random-int 100)]
+ (fn [cofx [_ id]]
+   (let [db (:db cofx)
+         rand-int (:random-int cofx)]
+     (println rand-int)
+     {:db (assoc-in db [:lanes id :speed] (/ rand-int 1000))})))
