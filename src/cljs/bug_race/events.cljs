@@ -18,3 +18,8 @@
  ::set-game-speed
  (fn [db [_ speed]]
    (assoc db :race-speed speed)))
+
+(re-frame/reg-event-db
+ ::set-lane-name
+ (fn [db [_ lane name]]
+   (assoc-in db [:lanes lane :name] name)))

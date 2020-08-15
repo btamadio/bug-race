@@ -1,6 +1,7 @@
 (ns bug-race.subs
   (:require
-   [re-frame.core :as re-frame]))
+   [re-frame.core :as re-frame]
+   [clojure.string :as str]))
 
 (re-frame/reg-sub
  ::race-speed
@@ -29,6 +30,21 @@
    (mapv :icon lanes)))
 
 (re-frame/reg-sub
+ ::lane-names
+ :<- [::lanes]
+ (fn [lanes [_ _]]
+   (println (mapv :name lanes))
+   (mapv :name lanes)))
+
+(re-frame/reg-sub
+ ::duplicate-name?
+ :<- [::lane-names]
+ (fn [lane-names [_ _]]
+   (or
+    (some str/blank? lane-names)
+    (not= (distinct lane-names) lane-names))))
+
+(re-frame/reg-sub
  ::lane-icon
  :<- [::lane-icons]
  (fn [lane-icons [_ id]]
@@ -39,3 +55,5 @@
  :<- [::lane-icons]
  (fn [lane-icons [_ _]]
    (not= (distinct lane-icons) lane-icons)))
+
+

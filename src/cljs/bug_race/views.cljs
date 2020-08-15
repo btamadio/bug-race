@@ -29,7 +29,9 @@
                                       :on-click #(dispatch [::events/select-icon lane bug-index])}]])]]
       [:div.field
        [:div.control
-        [:input.input {:type :text :placeholder "name"}]]]]]))
+        [:input.input {:type :text
+                       :placeholder "name"
+                       :on-blur #(dispatch [::events/set-lane-name lane (-> % .-target .-value)])}]]]]]))
 
 (defn speed-radio
   []
@@ -57,12 +59,9 @@
                   :checked (= race-speed :fast)}] " Fast"]]]]]))
 
 (defn race-button []
-  [:button.button.is-primary
-   {:disabled @(subscribe [::subs/duplicate-icon?])} "Start!"])
-
-(defn unique-icon-notif []
-  [:div.notification.is-warning 
-   "Please select a different bug icon for each lane"])
+  [:div.control.mb-6
+   [:button.button.is-primary
+    {:disabled @(subscribe [::subs/duplicate-icon?])} "Start!"]])
 
 (defn control-panel []
   [:div.columns
@@ -81,8 +80,10 @@
       [lane-form 3]]]]
    [:div.column.is-4
     [race-button]
+    (when @(subscribe [::subs/duplicate-name?])
+      [:div.notification.is-warning "Please enter a unique name for each bug"])
     (when @(subscribe [::subs/duplicate-icon?])
-      [unique-icon-notif])]])
+      [:div.notification.is-warning "Please choose a different bug for each lane"])]])
 
 (defn race-track []
   [:div.tile.is-ancestor
