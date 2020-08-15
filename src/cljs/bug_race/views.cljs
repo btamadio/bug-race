@@ -76,7 +76,7 @@
      [:div.box.is-child.has-text-centered
       [:div.control
        [:input {:type :radio :name :winner-guess}]]]
-     [:div.box.is-child
+     [:div.box.is-child.has-text-centered
       [:div.control
        [:input {:type :radio :name :winner-guess}]]]]]
    [:div#race-track.tile.is-8.box.is-child
