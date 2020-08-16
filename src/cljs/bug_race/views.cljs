@@ -134,13 +134,14 @@
 
 (defn winner-modal
   [winner-id]
-  (let [winner-name @(subscribe [::subs/bug-name winner-id])]
+  (let [winner-name @(subscribe [::subs/bug-name winner-id])
+        winner-icon-id @(subscribe [::subs/lane-icon winner-id])]
     [:div.modal.is-active
      [:div.modal-background {:on-click #(dispatch [::events/reset-game winner-id])}]
      [:div.modal-content
       [:div.box
        [:figure.image.is-48x48
-        [:img {:src (bug-icons winner-id)}]]
+        [:img {:src (bug-icons winner-icon-id)}]]
        [:p (str "Winner: " winner-name)]]]
      [:button.modal-close.is-large {:aria-label "close"
                                     :on-click #(dispatch [::events/reset-game winner-id])}]]))
