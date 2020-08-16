@@ -74,7 +74,7 @@
 
 (defn winner
   [positions]
-  (first (keep-indexed #(when (> %2 400) %1) positions)))
+  (first (keep-indexed #(when (> %2 800) %1) positions)))
 
 (re-frame/reg-event-fx
  ::tick

@@ -67,19 +67,21 @@
 
 
 (defn race-button []
-  [:div.control.mb-2
-   [:button.button.is-primary.is-large
-    {:on-click #(dispatch [::events/start-race])
-     :class (if (or
-                 (nil? @(subscribe [::subs/winner-guess]))
-                 (= @(subscribe [::subs/race-stage]) :racing)
-                 @(subscribe [::subs/duplicate-name?])
-                 @(subscribe [::subs/duplicate-icon?]))
-              :is-hidden)}
-    "Start!"]])
+  [:button.button.is-danger.is-large
+   {:on-click #(dispatch [::events/start-race])
+    :class (if (or
+                (nil? @(subscribe [::subs/winner-guess]))
+                (= @(subscribe [::subs/race-stage]) :racing)
+                @(subscribe [::subs/duplicate-name?])
+                @(subscribe [::subs/duplicate-icon?]))
+             :is-hidden)}
+   "Start!"])
 
 (defn control-panel []
-  [:div.columns
+  [:div.columns.is-centered.is-vcentered
+   [:div.column.is-2
+        (when (nil? @(subscribe [::subs/winner-guess]))
+      [:div.notification.is-info "Guess a winner!"])]
    [:div.column.is-6
     [:nav.panel.has-text-centered
      [:p.panel-heading "Race Setup"]
@@ -90,15 +92,12 @@
        ^{key lane}
        [:div.panel-block
         [lane-form lane]])]]
-   [:div.column.is-4
+   [:div.column.is-2
     [race-button]
     (when @(subscribe [::subs/duplicate-name?])
-      [:div.notification.is-warning "Please enter a unique name for each bug"])
-    (when (nil? @(subscribe [::subs/winner-guess]))
-      [:div.notification.is-warning "Guess a winner before starting the race!"])
+      [:div.notification.is-info "Give each bug a unique name"])
     (when @(subscribe [::subs/duplicate-icon?])
       [:div.notification.is-warning "Please choose a different bug for each lane"])]])
-
 
 
 (defn bug-img
@@ -110,16 +109,17 @@
                    :left @(subscribe [::subs/lane-position id])}}]))
 
 (defn race-track []
-  [:div.tile.is-ancestor
-   [:div#race-track.tile.is-8.box.is-child
-    [:figure.image.is-48x48.mb-5.mt-1
-     [bug-img 0]]
-    [:figure.image.is-48x48.mb-6
-     [bug-img 1]]
-    [:figure.image.is-48x48.mb-6.mt-1
-     [bug-img 2]]
-    [:figure.image.is-48x48.mb-5.mt-1
-     [bug-img 3]]]])
+  [:div.columns.is-centered.is-vcentered
+   [:div.column.is-11
+    [:div#race-track.box
+     [:figure.image.is-48x48.mb-5.mt-1
+      [bug-img 0]]
+     [:figure.image.is-48x48.mb-6
+      [bug-img 1]]
+     [:figure.image.is-48x48.mb-6.mt-1
+      [bug-img 2]]
+     [:figure.image.is-48x48.mb-5.mt-1
+      [bug-img 3]]]]])
 
 (defn winner-modal
   [winner-id]
