@@ -31,6 +31,7 @@
        [:div.control
         [:input.input {:type :text
                        :placeholder "name"
+                       :value @(subscribe [::subs/bug-name lane])
                        :on-blur #(dispatch [::events/set-lane-name lane (-> % .-target .-value)])}]]]]]))
 
 (defn speed-radio
@@ -124,7 +125,19 @@
             :style {:position :absolute
                     :left @(subscribe [::subs/lane-position 3])}}]]]])
 
+(defn winner-modal
+  [winner-id]
+  [:div.modal.is-active
+   [:div.modal-background {:on-click #(dispatch [::events/reset-game winner-id])}]
+   [:div.modal-content
+    [:div.box
+     [:p (str winner-id " WINS!")]]]
+   [:button.modal-close.is-large {:aria-label "close"
+                                  :on-click #(dispatch [::events/reset-game winner-id])}]])
+
 (defn main-panel []
   [:div
+   (when-let [winner-id @(subscribe [::subs/winner])]
+     [winner-modal winner-id])
    [race-track]
    [control-panel]])

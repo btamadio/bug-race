@@ -14,6 +14,11 @@
    (:winner-guess db)))
 
 (re-frame/reg-sub
+ ::winner
+ (fn [db]
+   (:winner db)))
+
+(re-frame/reg-sub
  ::race-stage
  (fn [db]
    (:race-stage db)))
@@ -54,6 +59,12 @@
  :<- [::lane-icons]
  (fn [lane-icons [_ id]]
    (lane-icons id)))
+
+(re-frame/reg-sub
+ ::bug-name
+ :<- [::lane-names]
+ (fn [lane-names [_ id]]
+   (lane-names id)))
 
 (re-frame/reg-sub
  ::lane-position

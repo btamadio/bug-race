@@ -52,8 +52,11 @@
 
 (re-frame/reg-event-fx
  ::end-race
- (fn [cofx _]
-   {::clear-interval {:id :game-ticker}}))
+ (fn [cofx [_ winner-id]]
+   (let [db (:db cofx)]
+     (println "race won by: " winner-id)
+     {::clear-interval {:id :game-ticker}
+      :db (assoc db :winner winner-id)})))
 
 (def speeds
   {:slow 5
@@ -79,7 +82,7 @@
    (let [positions (mapv :position (get-in cofx [:db :lanes]))
          winner-id (winner positions)]
      (if winner-id
-       {:dispatch [::end-race]}
+       {:dispatch [::end-race winner-id]}
        {:dispatch-n (list [::move-bug 0] [::move-bug 1] [::move-bug 2] [::move-bug 3])}))))
 
 (re-frame/reg-cofx
@@ -95,4 +98,13 @@
          rand-int (:random-int cofx)]
      {:db (assoc-in db [:lanes id :speed] (/ rand-int 1000))})))
 
-
+(re-frame/reg-event-db
+ ::reset-game
+ (fn [db [_ winner-id]]
+   (-> db
+       (assoc :winner nil)
+       (assoc :race-stage :pre-race)
+       (assoc-in [:lanes 0 :position] 0)
+       (assoc-in [:lanes 1 :position] 0)
+       (assoc-in [:lanes 2 :position] 0)
+       (assoc-in [:lanes 3 :position] 0))))
