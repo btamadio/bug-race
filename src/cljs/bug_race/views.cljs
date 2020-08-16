@@ -93,13 +93,16 @@
 
 (defn winner-guess-radio
   [id]
-  ^{:key id}
-  [:div.box.is-child.has-text-centered
-   [:div.control
-    [:input {:type :radio
-             :name :winner-guess
-             :checked (= @(subscribe [::subs/winner-guess]) id)
-             :on-click #(dispatch [::events/set-winner-guess id])}]]])
+  (let [winner-guess @(subscribe [::subs/winner-guess id])
+        race-stage @(subscribe [::subs/race-stage])
+        on-click (when (= race-stage :pre-race) #(dispatch [::events/set-winner-guess id]))]
+    ^{:key id}
+    [:div.box.is-child.has-text-centered
+     [:div.control
+      [:input {:type :radio
+               :name :winner-guess
+               :checked (= winner-guess id)
+               :on-click on-click}]]]))
 
 (defn bug-img
   [id]
