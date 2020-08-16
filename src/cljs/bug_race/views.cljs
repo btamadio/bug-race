@@ -91,27 +91,32 @@
     (when @(subscribe [::subs/duplicate-icon?])
       [:div.notification.is-warning "Please choose a different bug for each lane"])]])
 
+(defn winner-guess-radio
+  [id]
+  ^{:key id}
+  [:div.box.is-child.has-text-centered
+   [:div.control
+    [:input {:type :radio
+             :name :winner-guess
+             :checked (= @(subscribe [::subs/winner-guess]) id)
+             :on-click #(dispatch [::events/set-winner-guess id])}]]])
+
+(defn bug-img
+  [id]
+  ^{:key id}
+  [:img {:src (bug-icons @(subscribe [::subs/lane-icon id]))
+         :style {:position :absolute
+                 :left @(subscribe [::subs/lane-position id])}}])
+
 (defn race-track []
   [:div.tile.is-ancestor
    [:div.tile.is-1.is-parent.is-vertical
     [:div.tile.is-child
-     [:div.box.is-child.has-text-centered
-      [:div.control
-       [:input {:type :radio :name :winner-guess}]]]
-     [:div.box.is-child.has-text-centered
-      [:div.control
-       [:input {:type :radio :name :winner-guess}]]]
-     [:div.box.is-child.has-text-centered
-      [:div.control
-       [:input {:type :radio :name :winner-guess}]]]
-     [:div.box.is-child.has-text-centered
-      [:div.control
-       [:input {:type :radio :name :winner-guess}]]]]]
+     (for [id [0 1 2 3]]
+       [winner-guess-radio id])]]
    [:div#race-track.tile.is-8.box.is-child
     [:figure.image.is-48x48.mb-5.mt-1
-     [:img {:src (bug-icons @(subscribe [::subs/lane-icon 0]))
-            :style {:position :absolute
-                    :left @(subscribe [::subs/lane-position 0])}}]]
+     [bug-img 0]]
     [:figure.image.is-48x48.mb-6
      [:img {:src (bug-icons @(subscribe [::subs/lane-icon 1]))
             :style {:position :absolute

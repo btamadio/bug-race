@@ -108,3 +108,8 @@
        (assoc-in [:lanes 1 :position] 0)
        (assoc-in [:lanes 2 :position] 0)
        (assoc-in [:lanes 3 :position] 0))))
+
+(re-frame/reg-event-db
+ ::set-winner-guess
+ (fn [db [_ id]]
+   (assoc db :winner-guess id)))
