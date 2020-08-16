@@ -134,13 +134,16 @@
 
 (defn winner-modal
   [winner-id]
-  [:div.modal.is-active
-   [:div.modal-background {:on-click #(dispatch [::events/reset-game winner-id])}]
-   [:div.modal-content
-    [:div.box
-     [:p (str winner-id " WINS!")]]]
-   [:button.modal-close.is-large {:aria-label "close"
-                                  :on-click #(dispatch [::events/reset-game winner-id])}]])
+  (let [winner-name @(subscribe [::subs/bug-name winner-id])]
+    [:div.modal.is-active
+     [:div.modal-background {:on-click #(dispatch [::events/reset-game winner-id])}]
+     [:div.modal-content
+      [:div.box
+       [:figure.image.is-48x48
+        [:img {:src (bug-icons winner-id)}]]
+       [:p (str "Winner: " winner-name)]]]
+     [:button.modal-close.is-large {:aria-label "close"
+                                    :on-click #(dispatch [::events/reset-game winner-id])}]]))
 
 (defn main-panel []
   [:div
