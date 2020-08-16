@@ -105,10 +105,11 @@
 
 (defn bug-img
   [id]
-  ^{:key id}
-  [:img {:src (bug-icons @(subscribe [::subs/lane-icon id]))
-         :style {:position :absolute
-                 :left @(subscribe [::subs/lane-position id])}}])
+  (when (= @(subscribe [::subs/race-stage]) :racing)
+    ^{:key id}
+    [:img {:src (bug-icons @(subscribe [::subs/lane-icon id]))
+           :style {:position :absolute
+                   :left @(subscribe [::subs/lane-position id])}}]))
 
 (defn race-track []
   [:div.tile.is-ancestor
@@ -120,17 +121,11 @@
     [:figure.image.is-48x48.mb-5.mt-1
      [bug-img 0]]
     [:figure.image.is-48x48.mb-6
-     [:img {:src (bug-icons @(subscribe [::subs/lane-icon 1]))
-            :style {:position :absolute
-                    :left @(subscribe [::subs/lane-position 1])}}]]
-    [:figure.image.is-48x48.mb-6
-     [:img {:src (bug-icons @(subscribe [::subs/lane-icon 2]))
-            :style {:position :absolute
-                    :left @(subscribe [::subs/lane-position 2])}}]]
-    [:figure.image.is-48x48.mb-1
-     [:img {:src (bug-icons @(subscribe [::subs/lane-icon 3]))
-            :style {:position :absolute
-                    :left @(subscribe [::subs/lane-position 3])}}]]]])
+     [bug-img 1]]
+    [:figure.image.is-48x48.mb-6.mt-1
+     [bug-img 2]]
+    [:figure.image.is-48x48.mb-5.mt-1
+     [bug-img 3]]]])
 
 (defn winner-modal
   [winner-id]
