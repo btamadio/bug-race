@@ -32,7 +32,7 @@
         [:input.input {:type :text
                        :placeholder "name"
                        :value @(subscribe [::subs/bug-name lane])
-                       :on-blur #(dispatch [::events/set-lane-name lane (-> % .-target .-value)])}]]]]]))
+                       :on-change #(dispatch [::events/set-lane-name lane (-> % .-target .-value)])}]]]]]))
 
 (defn speed-radio
   []
@@ -60,13 +60,15 @@
                   :checked (= race-speed :fast)}] " Fast"]]]]]))
 
 (defn race-button []
-  [:div.control.mb-6
-   [:button.button.is-primary
+  [:div.control.mb-2
+   [:button.button.is-primary.is-large
     {:on-click #(dispatch [::events/start-race])
-     :disabled (or
-                (= @(subscribe [::subs/race-stage]) :racing)
-                @(subscribe [::subs/duplicate-name?])
-                @(subscribe [::subs/duplicate-icon?]))}
+     :class (if (or
+                 (nil? @(subscribe [::subs/winner-guess]))
+                 (= @(subscribe [::subs/race-stage]) :racing)
+                 @(subscribe [::subs/duplicate-name?])
+                 @(subscribe [::subs/duplicate-icon?]))
+              :is-hidden)}
     "Start!"]])
 
 (defn control-panel []
@@ -84,6 +86,8 @@
     [race-button]
     (when @(subscribe [::subs/duplicate-name?])
       [:div.notification.is-warning "Please enter a unique name for each bug"])
+    (when (nil? @(subscribe [::subs/winner-guess]))
+      [:div.notification.is-warning "Pick a winner before starting the race!"])
     (when @(subscribe [::subs/duplicate-icon?])
       [:div.notification.is-warning "Please choose a different bug for each lane"])]])
 
