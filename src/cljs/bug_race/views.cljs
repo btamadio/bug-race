@@ -76,14 +76,10 @@
      [:p.panel-heading "Race Setup"]
      [:div.panel-block
       [speed-radio]]
-     [:div.panel-block
-      [lane-form 0]]
-     [:div.panel-block
-      [lane-form 1]]
-     [:div.panel-block
-      [lane-form 2]]
-     [:div.panel-block
-      [lane-form 3]]]]
+     (for [lane [0 1 2 3]]
+       ^{key lane}
+       [:div.panel-block
+        [lane-form lane]])]]
    [:div.column.is-4
     [race-button]
     (when @(subscribe [::subs/duplicate-name?])
@@ -96,8 +92,7 @@
   (let [winner-guess @(subscribe [::subs/winner-guess id])
         race-stage @(subscribe [::subs/race-stage])
         on-click (when (= race-stage :pre-race) #(dispatch [::events/set-winner-guess id]))]
-    ^{:key id}
-    [:div.box.is-child.has-text-centered
+    [:div.box.is-child.has-text-centered {:key id}
      [:div.control
       [:input {:type :radio
                :name :winner-guess
@@ -116,7 +111,7 @@
    [:div.tile.is-1.is-parent.is-vertical
     [:div.tile.is-child
      (for [id [0 1 2 3]]
-       [winner-guess-radio id])]]
+      [winner-guess-radio id])]]
    [:div#race-track.tile.is-8.box.is-child
     [:figure.image.is-48x48.mb-5.mt-1
      [bug-img 0]]
