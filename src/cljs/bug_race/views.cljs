@@ -10,12 +10,42 @@
    "images/butterfly.png"
    "images/ladybug.png"])
 
+(defn winner-guess-button
+  [id]
+  (let [winner-guess @(subscribe [::subs/winner-guess id])
+        selected? (= winner-guess id)
+        race-stage @(subscribe [::subs/race-stage])
+        racing? (= race-stage :racing)
+        on-click (when (not racing?) #(dispatch [::events/set-winner-guess id]))]
+    [:div.control
+     [:button.button {:on-click on-click
+                      :class (if selected?
+                               :is-dark
+                               :is-light)
+                      :disabled (and racing? (not selected?))} (str "Lane " (inc id))]]))
+
+(defn speed-button
+  [speed]
+  (let [race-speed @(subscribe [::subs/race-speed])
+        selected? (= race-speed speed)
+        on-click #(dispatch [::events/set-game-speed speed])]
+    [:div.control
+     [:button.button {:on-click on-click
+                      :class (if selected? :is-dark :is-white)}
+      speed]]))
+
+(defn speed-buttons
+  []
+  [:div.field.is-horizontal
+   [speed-button :slow]
+   [speed-button :normal]
+   [speed-button :fast]])
+
 (defn lane-form
   [lane]
   (let [bug-icon @(subscribe [::subs/lane-icon lane])]
-    [:div.field.is-horizontal
-     [:div.field-label.is-normal
-      [:label.label (str "Lane " (inc lane))]]
+    [:div.field.is-horizontal.is-grouped
+     [winner-guess-button lane]     
      [:div.field-body
       [:div.field.is-grouped
        [:div.control
@@ -34,30 +64,7 @@
                        :value @(subscribe [::subs/bug-name lane])
                        :on-change #(dispatch [::events/set-lane-name lane (-> % .-target .-value)])}]]]]]))
 
-(defn speed-radio
-  []
-  (let [race-speed @(subscribe [::subs/race-speed])]
-    [:div.field.is-horizontal
-     [:div.field-label
-      [:label.label "Speed"]]
-     [:div.field-body
-      [:div.field
-       [:div.control
-        [:label.radio
-         [:input {:type :radio
-                  :name "game-speed"
-                  :on-click #(dispatch [::events/set-game-speed :slow])
-                  :checked (= race-speed :slow)}] " Slow"]
-        [:label.radio
-         [:input {:type :radio
-                  :name "game-speed"
-                  :on-click #(dispatch [::events/set-game-speed :normal])
-                  :checked (= race-speed :normal)}] " Normal"]
-        [:label.radio
-         [:input {:type :radio
-                  :name "game-speed"
-                  :on-click #(dispatch [::events/set-game-speed :fast])
-                  :checked (= race-speed :fast)}] " Fast"]]]]]))
+
 
 (defn race-button []
   [:div.control.mb-2
@@ -77,7 +84,7 @@
     [:nav.panel
      [:p.panel-heading "Race Setup"]
      [:div.panel-block
-      [speed-radio]]
+      [speed-buttons]]
      (for [lane [0 1 2 3]]
        ^{key lane}
        [:div.panel-block
@@ -87,21 +94,11 @@
     (when @(subscribe [::subs/duplicate-name?])
       [:div.notification.is-warning "Please enter a unique name for each bug"])
     (when (nil? @(subscribe [::subs/winner-guess]))
-      [:div.notification.is-warning "Pick a winner before starting the race!"])
+      [:div.notification.is-warning "Guess a winner before starting the race!"])
     (when @(subscribe [::subs/duplicate-icon?])
       [:div.notification.is-warning "Please choose a different bug for each lane"])]])
 
-(defn winner-guess-radio
-  [id]
-  (let [winner-guess @(subscribe [::subs/winner-guess id])
-        race-stage @(subscribe [::subs/race-stage])
-        on-click (when (= race-stage :pre-race) #(dispatch [::events/set-winner-guess id]))]
-    [:div.box.is-child.has-text-centered {:key id}
-     [:div.control
-      [:input {:type :radio
-               :name :winner-guess
-               :checked (= winner-guess id)
-               :on-click on-click}]]]))
+
 
 (defn bug-img
   [id]
@@ -113,10 +110,6 @@
 
 (defn race-track []
   [:div.tile.is-ancestor
-   [:div.tile.is-1.is-parent.is-vertical
-    [:div.tile.is-child
-     (for [id [0 1 2 3]]
-      [winner-guess-radio id])]]
    [:div#race-track.tile.is-8.box.is-child
     [:figure.image.is-48x48.mb-5.mt-1
      [bug-img 0]]
