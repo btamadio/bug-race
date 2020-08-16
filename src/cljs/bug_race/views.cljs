@@ -22,21 +22,21 @@
                       :class (if selected?
                                :is-dark
                                :is-light)
-                      :disabled (and racing? (not selected?))} (str "Lane " (inc id))]]))
+                      :disabled (and racing? (not selected?))}
+      (str "Lane " (inc id))]]))
 
 (defn speed-button
   [speed]
   (let [race-speed @(subscribe [::subs/race-speed])
         selected? (= race-speed speed)
         on-click #(dispatch [::events/set-game-speed speed])]
-    [:div.control
-     [:button.button {:on-click on-click
-                      :class (if selected? :is-dark :is-white)}
-      speed]]))
+    [:button.button {:on-click on-click
+                     :class (if selected? :is-dark :is-light)}
+     speed]))
 
 (defn speed-buttons
   []
-  [:div.field.is-horizontal
+  [:div.buttons.has-addons.is-centered
    [speed-button :slow]
    [speed-button :normal]
    [speed-button :fast]])
@@ -81,9 +81,10 @@
 (defn control-panel []
   [:div.columns
    [:div.column.is-6
-    [:nav.panel
+    [:nav.panel.has-text-centered
      [:p.panel-heading "Race Setup"]
      [:div.panel-block
+      [:div.column.is-3]
       [speed-buttons]]
      (for [lane [0 1 2 3]]
        ^{key lane}
